@@ -4,14 +4,15 @@
 # für Windows Powershell
 #-----------#Installation des Scripts ----------------------------------------------------
 
-
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force # Package-Provider installieren damit das Script für die Hardware-Hashes ausgeführt werden kann
-Install-Script Get-WindowsAutoPilotInfo                              # Instlallieren des Scirpts zum auslesen der Hardware-Hashes
+Powershell                                                                  # Starten der Powershell 
+Install-PackageProvider -Name NuGet -Confirm -ErrorAction SilentlyContinue  # Package-Provider installieren damit das Script für die Hardware-Hashes ausgeführt werden kann
+Install-Script Get-WindowsAutoPilotInfo -ErrorAction SilentlyContinue       # Instlallieren des Scirpts zum auslesen der Hardware-Hashes
+Import-Module Microsoft.PowerShell.Management
 
 #-----------Auslesen der Hardware-Hashes aus der Powershell -------------------------------
 
 
-$Hash = get-WindowsAutoPilotInfo #Auslesen des Hardware-Hashes
+$Hash = get-WindowsAutoPilotInfo -ErrorAction SilentlyContinue #Auslesen des Hardware-Hashes
 
 #------------------#Abfragen der benötigten Informationen zum einfügen der Daten in die .CSV ------------------------------------------------------------------------
 $SN  = (Get-WmiObject -Class Win32_BIOS).SerialNumber
@@ -23,17 +24,11 @@ $ProductKey = wmic path softwarelicensingservice get OA3xOriginalProductKey
 #-Value "Device Serial Number,Windows Product ID,Hardware Hash,Group Tag,Assigned User
 #        $SN,$ProductKey,$Hash,<optionalGroupTag>,$UPN"
 
-New-Item -path ~/Documents -name "InTune" -ItemType "directory" -ErrorAction SilentlyContinue        
-$Number = 0
-     $exportObj = New-Object psobject -Property @{"Device Serial number" = $SN;"Windows Product ID" = $ProductKey; "Hardware Hash" =$Hash;"Group Tag" = ""; "Assigned User" = ""}
+$usbdriveGUID = "0002941a-0000-0000-0000-100000000000"
 
-try {
-$exportObj | export-csv -path ~/Documents/InTune/NewDevice$Number.csv -ErrorAction 
-}
-
-catch {
-    $Number = $Number + 1
-}
+$fullPath = (Get-Volume -Path "\\?\Volume{$usbdriveGUID}\").driveLetter+":\InTune"   
+$exportObj = New-Object psobject -Property @{"Device Serial number" = $SN;"Windows Product ID" = $ProductKey; "Hardware Hash" =$Hash;"Group Tag" = ""; "Assigned User" = ""}
+$exportObj | export-csv -path $fullPath + "NewDevice$SN.csv" 
 
 
 
