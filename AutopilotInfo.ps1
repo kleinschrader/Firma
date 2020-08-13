@@ -13,18 +13,28 @@ Install-Script Get-WindowsAutoPilotInfo                              # Instlalli
 
 $Hash = get-WindowsAutoPilotInfo #Auslesen des Hardware-Hashes
 
-#------------------#Abfragen der benötigten Informationen zum einfügen der ------------------------------------------------------------------------
+#------------------#Abfragen der benötigten Informationen zum einfügen der Daten in die .CSV ------------------------------------------------------------------------
 $SN  = (Get-WmiObject -Class Win32_BIOS).SerialNumber
 $ProductKey = wmic path softwarelicensingservice get OA3xOriginalProductKey
-$AssignedUser = Get-ADUser
-$AssignedUser
+# $UPN = Read-Host("Hier die eigene UPN angeben. Wenn unbekannt, UNBEDINGT unterlassen und erst erfragen.") || "Aufgepasst mit dem Dingens, MS mag da keine falschen Inputs".upper
 
 
+#New-Item -path ~Documents\Intune . -Name "NewDevice.csv" -ItemType "file" 
+#-Value "Device Serial Number,Windows Product ID,Hardware Hash,Group Tag,Assigned User
+#        $SN,$ProductKey,$Hash,<optionalGroupTag>,$UPN"
+
+New-Item -path ~/Documents -name "InTune" -ItemType "directory" -ErrorAction SilentlyContinue        
+$Number = 0
+     $exportObj = New-Object psobject -Property @{"Device Serial number" = $SN;"Windows Product ID" = $ProductKey; "Hardware Hash" =$Hash;"Group Tag" = ""; "Assigned User" = ""}
+
+try {
+$exportObj | export-csv -path ~/Documents/InTune/NewDevice$Number.csv -ErrorAction 
+}
+
+catch {
+    $Number = $Number + 1
+}
 
 
-
-
-New-Item -Path . -Name "NewDevice.csv" -ItemType "file" -Value "Device Serial Number,Windows Product ID,Hardware Hash,Group Tag,Assigned User
-$SN,$ProductKey,$Hash,<optionalGroupTag>,<optionalAssignedUser>"
 
 
