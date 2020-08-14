@@ -1,9 +1,22 @@
 #------------Installieren der benötigten Packages----------------------
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -ErrorAction Continue -
-Install-Module AzureAD -ErrorAction Continue
-Install-Module WindowsAutopilotIntune -ErrorAction Continue
-Install-Module Microsoft.Graph.Intune -ErrorAction Continue
+"Installieren der bentötigten Pakete"
+"Paket 1 von 4"
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+"Fertig"
+"Paket 2 von 4"
+Install-Module AzureAD -Force
+"Fertig"
+"Paket 3 von 4"
+Install-Module WindowsAutopilotIntune -Force
+"Fertig"
+"Paket 4 von  4"
+Install-Module Microsoft.Graph.Intune -Force
+"Alle Pakete installiert" 
 #------------Verbinden mit InTune--------------------------------------
+"Verbindung zu MS-Graph aufbauen"
 Connect-MSGraph
+"Erfolgreich"
 #------------Erstellen einer JSON-FILE für nachträglichen Zugang-------
-Get-AutopilotProfile | ConvertTo-AutopilotConfigurationJSON | Out-File "AutopilotConfigurationFile.js" -Encoding ascii
+"Erstellen einer APConfig.json"
+Get-AutopilotProfile | ConvertTo-AutopilotConfigurationJSON | Out-File "~\Documents\InTune\AutopilotConfigurationFile.json" -Encoding ascii
+"Abgeschlossen"
