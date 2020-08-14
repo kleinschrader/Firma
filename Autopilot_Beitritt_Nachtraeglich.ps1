@@ -7,13 +7,12 @@ Install-Module Microsoft.Graph.Intune -Force
 Connect-MSGraph
 #------------Erstellen einer JSON-FILE für nachträglichen Zugang-------
 $Number = 0
-$Profile = Get-AutopilotProfile | ConvertTo-AutopilotConfigurationJSON
-ConvertTo-Json $Profile
-while($true){
+Get-AutopilotProfile | ConvertTo-AutopilotConfigurationJSON | while($True){
     try {
-        new-item -path "~/Documents/InTune/AP-Profile/Profil$Number.json" -ItemType File -Value $Profile
+        Out-File "~/Documents/InTune/AP-Profile/Profil$Number.json" -Encoding ascii
         break
     }
     do {
         $Number = $Number + 1
     }
+}
