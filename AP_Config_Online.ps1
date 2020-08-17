@@ -14,6 +14,6 @@ Install-Module Microsoft.Graph.Intune -Force
 "Alle Pakete installiert" 
 #------------Verbinden mit InTune--------------------------------------
 "Es wird eine Verbindung zu InTune aufgebaut."
-$UPN = Read-Host -Prompt "Bitte geben sie ihre UPN ein."
+# $UPN = Read-Host -Prompt "Bitte geben sie ihre UPN ein."
 $AComputerName = HOSTNAME.EXE
-Get-WindowsAutoPilotInfo.ps1 -AssignedUser "$UPN" -Append -Online -AddToGroup "SG MDM Test Geräte" -AssignedComputerName "$AComputername" -Assign
+Get-WindowsAutoPilotInfo.ps1 -AssignedUser "" -Append -Online -AddToGroup "SG MDM Test Geräte" -AssignedComputerName "$AComputername" -Assign
